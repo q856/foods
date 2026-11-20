@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>我的美食日记</title>
+<style>
+  :root{
+    --bg:#fdf8f3;
+    --line:#eadfd5;
+    --text:#3b3128;
+    --muted:#9a8b7c;
+    --accent:#e07a3f;
+    --accent-soft:#fbe6d8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;}
+
+  /* ---------- 顶部 ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(253,248,243,.92);
+    backdrop-filter:saturate(180%) blur(10px);
+    -webkit-backdrop-filter:saturate(180%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{
+    max-width:1100px;margin:0 auto;padding:12px 20px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  h1{font-size:18px;margin:0;font-weight:700;white-space:nowrap;letter-spacing:.5px;}
+  .search{
+    flex:1 1 170px;min-width:130px;padding:9px 15px;
+    border:1px solid var(--line);border-radius:999px;
+    font:inherit;font-size:14px;background:#fff;color:var(--text);
+  }
+  .search:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .header-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{
+    border:1px solid var(--line);background:#fff;color:var(--text);
+    border-radius:10px;padding:9px 15px;font-size:14px;cursor:pointer;
+    transition:.15s;white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--accent);color:var(--accent);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+  .btn.primary:hover{filter:brightness(1.06);color:#fff;}
+
+  /* ---------- 内容区 ---------- */
+  main{max-width:1100px;margin:0 auto;padding:22px 20px 70px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;}
+  .empty{text-align:center;color:var(--muted);padding:70px 20px;font-size:15px;line-height:1.9;}
+
+  .card{
+    background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:0 1px 2px rgba(80,50,30,.06),0 6px 18px rgba(80,50,30,.06);
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(80,50,30,.08),0 10px 26px rgba(80,50,30,.11);}
+  .card > img,.card > .no-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#f6efe8;}
+  .no-img{display:flex;align-items:center;justify-content:center;font-size:44px;}
+  .card-body{padding:14px 16px 12px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .card-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .card-top h3{margin:0;font-size:16px;font-weight:600;word-break:break-word;}
+  .stars-mini{color:#f5a623;font-size:13px;white-space:nowrap;letter-spacing:-1px;}
+  .place,.date{font-size:12.5px;color:var(--muted);}
+  .notes{margin:2px 0 0;font-size:13px;line-height:1.55;color:#6b5c4e;white-space:pre-wrap;word-break:break-word;}
+  .card-actions{margin-top:auto;padding-top:10px;display:flex;gap:8px;justify-content:flex-end;}
+  .card-actions button{
+    border:1px solid var(--line);background:#fff;border-radius:8px;
+    padding:5px 12px;font-size:12.5px;color:var(--muted);cursor:pointer;transition:.15s;
+  }
+  .card-actions button:hover{color:var(--accent);border-color:var(--accent);}
+
+  /* ---------- 弹窗 ---------- */
+  .modal{
+    position:fixed;inset:0;z-index:100;display:none;
+    align-items:center;justify-content:center;padding:16px;overflow-y:auto;
+    background:rgba(40,25,15,.45);
+  }
+  .modal.show{display:flex;}
+  .modal-box{
+    background:#fff;border-radius:18px;padding:22px;width:100%;max-width:470px;
+    max-height:92vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.2);
+  }
+  .modal-box h2{margin:0 0 18px;font-size:18px;}
+  .field{display:block;margin-bottom:14px;}
+  .field > span{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .field input[type=text],.field input[type=date],.field textarea,.field input[type=file]{
+    width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:14px;color:var(--text);background:#fff;
+  }
+  .field textarea{resize:vertical;min-height:70px;}
+  .field input:focus,.field textarea:focus{
+    outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .rating{font-size:30px;line-height:1;color:#e2dcd5;cursor:pointer;user-select:none;display:flex;gap:4px;}
+  .rating span{transition:color .12s,transform .12s;}
+  .rating span.on{color:#f5a623;}
+  .rating span:hover{transform:scale(1.12);}
+  .preview{margin-bottom:6px;}
+  .thumb{position:relative;display:inline-block;}
+  .thumb img{max-width:100%;max-height:190px;border-radius:12px;display:block;}
+  .thumb button{
+    positi
